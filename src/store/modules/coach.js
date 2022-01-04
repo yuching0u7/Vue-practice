@@ -25,10 +25,16 @@ const coach = {
     }
   },
   mutations:{
-
+    updateCoachList(state, payload){
+      state.coaches.push(payload)
+    }
   },
   actions:{
+    updateCoachList(context, data){
+      data.id = Date.now()
+      context.commit('updateCoachList', data)
 
+    }
   },
   getters:{
     coaches(state){
