@@ -8,6 +8,7 @@
 <section>
   <base-card>
     <h2>Interested? Reach Out Now!</h2>
+    <contact-coach></contact-coach>
     <base-button link :to="`${$route.path}/contact`">Contact</base-button>
   </base-card>
 </section>
@@ -20,7 +21,9 @@
 </template>
 
 <script>
+import ContactCoach from '../requests/ContactCoach.vue'
 export default {
+  components: { ContactCoach },
   props: ['id'],
   data() {
     return {
