@@ -6,7 +6,7 @@
   <base-card>
     <div class="controls">
       <base-button mode="outline">Refresh</base-button>
-      <base-button link to="/register">Register as Coach</base-button>
+      <base-button v-if="!isCoach" link to="/register">Register as Coach</base-button>
     </div>
     <ul v-if="hasCoach">
       <coach-item v-for="coach in filterCoaches" :key="coach.id" :id="coach.id" :firstname="coach.firstName" :lastname="coach.lastName" :rate="coach.hourlyRate" :areas="coach.areas"></coach-item>
@@ -24,26 +24,29 @@ export default {
     CoachItem,
     CoachFilter
   },
-  data(){
-    return{
-      activeFilter:{
-        frontend:true,
-        backend:true,
-        career:true
+  data() {
+    return {
+      activeFilter: {
+        frontend: true,
+        backend: true,
+        career: true
       }
     }
   },
   computed: {
+    isCoach() {
+      return this.$store.getters['coach/isCoach']
+    },
     filterCoaches() {
       const coaches = this.$store.getters['coach/coaches']
       return coaches.filter(coach => {
-        if(this.activeFilter.frontend && coach.areas.includes('frontend')){
+        if (this.activeFilter.frontend && coach.areas.includes('frontend')) {
           return true
         }
-        if(this.activeFilter.backend && coach.areas.includes('backend')){
+        if (this.activeFilter.backend && coach.areas.includes('backend')) {
           return true
         }
-        if(this.activeFilter.career && coach.areas.includes('career')){
+        if (this.activeFilter.career && coach.areas.includes('career')) {
           return true
         }
         return false
@@ -51,10 +54,10 @@ export default {
     },
     hasCoach() {
       return this.$store.getters['coach/hasCoach']
-    }  
+    }
   },
-  methods:{
-    setFilter(filter){
+  methods: {
+    setFilter(filter) {
       this.activeFilter = filter
     }
   }
