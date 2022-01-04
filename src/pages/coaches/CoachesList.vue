@@ -35,7 +35,19 @@ export default {
   },
   computed: {
     filterCoaches() {
-      return this.$store.getters['coach/coaches']
+      const coaches = this.$store.getters['coach/coaches']
+      return coaches.filter(coach => {
+        if(this.activeFilter.frontend && coach.areas.includes('frontend')){
+          return true
+        }
+        if(this.activeFilter.backend && coach.areas.includes('backend')){
+          return true
+        }
+        if(this.activeFilter.career && coach.areas.includes('career')){
+          return true
+        }
+        return false
+      })
     },
     hasCoach() {
       return this.$store.getters['coach/hasCoach']
