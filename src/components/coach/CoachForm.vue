@@ -1,36 +1,42 @@
 <template>
 <form @submit.prevent="submitForm">
-  <div class="form-control">
+  <div class="form-control" :class="{invalid:!firstName.isValid}">
     <label for="firstname">FirstName</label>
-    <input id="firstname" type="text" v-model.trim="firstName">
+    <input id="firstname" type="text" v-model.trim="firstName.val" @blur="clearValidity('firstName')">
+    <p v-if="!firstName.isValid">Required input</p>
   </div>
-  <div class="form-control">
+  <div class="form-control" :class="{invalid:!lastName.isValid}">
     <label for="lastname">LastName</label>
-    <input id="lastname" type="text" v-model.trim="lastName">
+    <input id="lastname" type="text" v-model.trim="lastName.val" @blur="clearValidity('lastName')">
+    <p v-if="!lastName.isValid">Required input</p>
   </div>
-  <div class="form-control">
+  <div class="form-control" :class="{invalid:!description.isValid}">
     <label for="description">Description</label>
-    <textarea id="description" rows="5" v-model.trim="description"></textarea>
+    <textarea id="description" rows="5" v-model.trim="description.val" @blur="clearValidity('description')"></textarea>
+    <p v-if="!description.isValid">Required input</p>
   </div>
-  <div class="form-control">
+  <div class="form-control" :class="{invalid:!rate.isValid}">
     <label for="rate">Hourly Rate</label>
-    <input id="rate" type="number" v-model.number="rate">
+    <input id="rate" type="number" v-model.number="rate.val" @blur="clearValidity('rate')">
+    <p v-if="!rate.isValid">Required input</p>
   </div>
-  <div class="form-control">
+  <div class="form-control" :class="{invalid:!areas.isValid}">
     <h3>Areas of Expertise</h3>
     <div class="filter-option">
-      <input type="checkbox" id="frontend" value="frontend" v-model="areas">
+      <input type="checkbox" id="frontend" value="frontend" v-model="areas.val" @blur="clearValidity('areas')">
       <label for="frontend">Frontend Development</label>
     </div>
     <div class="filter-option">
-      <input type="checkbox" id="backend" value="backend" v-model="areas">
+      <input type="checkbox" id="backend" value="backend" v-model="areas.val" @blur="clearValidity('areas')">
       <label for="backend">Backend Development</label>
     </div>
     <div class="filter-option">
-      <input type="checkbox" id="career" value="career" v-model="areas">
+      <input type="checkbox" id="career" value="career" v-model="areas.val" @blur="clearValidity('areas')">
       <label for="career">Career Advisory</label>
     </div>
+    <p v-if="!areas.isValid">Required input</p>
   </div>
+  <p v-if="!isValidForm">Please fix form error.</p>
   <base-button>Register</base-button>
 </form>
 </template>
@@ -40,21 +46,67 @@ export default {
   emits:['save-coach'],
   data() {
     return {
-      firstName: '',
-      lastName: '',
-      rate: null,
-      description: '',
-      areas: []
+      firstName: {
+        val:'',
+        isValid:true
+      },
+      lastName: {
+        val:'',
+        isValid:true
+      },
+      rate: {
+        val:null,
+        isValid:true
+      },
+      description: {
+        val:'',
+        isValid:true
+      },
+      areas: {
+        val:[],
+        isValid:true
+      },
+      isValidForm: true
     }
   },
   methods: {
+    validForm(){
+      this.isValidForm = true
+      if(this.firstName.val === ''){
+        this.firstName.isValid = false
+        this.isValidForm = false
+      }
+      if(this.lastName.val === ''){
+        this.lastName.isValid = false
+        this.isValidForm = false
+      }
+      if(this.description.val === ''){
+        this.description.isValid = false
+        this.isValidForm = false
+      }
+      if(!this.rate.val || this.rate.val < 0){
+        this.rate.isValid = false
+        this.isValidForm = false
+      }
+      if(this.areas.val.length === 0){
+        this.areas.isValid = false
+        this.isValidForm = false
+      }
+    },
+    clearValidity(input){
+      this[input].isValid = true
+    },
     submitForm() {
+      this.validForm()
+      if(!this.isValidForm){
+        return;
+      }
       const formData = {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        hourlyRate: this.rate,
-        description: this.description,
-        areas: this.areas
+        firstName: this.firstName.val,
+        lastName: this.lastName.val,
+        hourlyRate: this.rate.val,
+        description: this.description.val,
+        areas: this.areas.val
       }
       this.$emit('save-coach', formData)
     }
